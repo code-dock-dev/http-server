@@ -12,7 +12,6 @@ def handle_request(client_socket):
     with client_socket:
         try:
             request_data_bytes = client_socket.recv(1024)
-            
             if not request_data_bytes:
                 logging.warning("Client disconnected before sending data.")
                 return
@@ -38,7 +37,6 @@ def handle_request(client_socket):
 
         except (BrokenPipeError, ConnectionResetError, socket.error) as e:
             logging.error(f"Socket error while handling request: {e}")
-
 
 def run_server():
     """
