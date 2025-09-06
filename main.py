@@ -1,4 +1,5 @@
 import logging
+import os
 import socket
 
 HOST = '0.0.0.0'
@@ -19,20 +20,28 @@ def handle_request(client_socket):
             request_data = request_data_bytes.decode('utf-8')
             request_line = request_data.splitlines()[0] if request_data else ''
             logging.info(request_line)
-
-            response_line = "HTTP/1.1 200 OK\r\n"
-            content_type_header = "Content-Type: text/html\r\n"
-            connection_header = "Connection: close\r\n"
-            blank_line = "\r\n"
-            response_content = "<html><body><h1>Hello, Browser!</h1></body></html>"
             
-            full_response = (response_line + 
-                             content_type_header + 
-                             connection_header +
-                             blank_line +
-                             response_content)
+            method, path, _ = request_line.split() if request_line else ('', '', '')
+            if method == 'GET' and (path == '/' or path == '/index.html'):
+                index_file = "index.html"
+                if os.path.exists(index_file):
+                    with open(index_file, 'r') as f:
+                        response_content = f.read()
+                    
+                    response_line = "HTTP/1.1 200 OK\r\n"
+                    content_type_header = "Content-Type: text/html\r\n"
+                    connection_header = "Connection: close\r\n"
+                    blank_line = "\r\n"
             
-            client_socket.sendall(full_response.encode('utf-8'))
+                    full_response = (response_line + 
+                                    content_type_header + 
+                                    connection_header +
+                                    blank_line +
+                                    response_content)
+            
+                    client_socket.sendall(full_response.encode('utf-8'))
+                else:
+                    logging.error(f"{index_file} not found.")
 
         except (BrokenPipeError, ConnectionResetError, socket.error) as e:
             logging.error(f"Socket error while handling request: {e}")
