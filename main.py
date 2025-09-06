@@ -38,7 +38,6 @@ def handle_request(client_socket):
         except (BrokenPipeError, ConnectionResetError, socket.error) as e:
             logging.error(f"Socket error while handling request: {e}")
 
-
 def run_server():
     """
     Sets up and runs the server loop to listen for incoming connections.
