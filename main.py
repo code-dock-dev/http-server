@@ -56,7 +56,7 @@ def run_server():
                 handle_request(client_socket)
                 
             except KeyboardInterrupt:
-                logging.info("\nServer shutting down.")
+                logging.info("Server shutting down.")
                 break
             except Exception as e:
                 logging.error(f"An error occurred: {e}")
