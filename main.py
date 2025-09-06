@@ -13,12 +13,12 @@ def handle_request(client_socket):
         try:
             request_data_bytes = client_socket.recv(1024)
             if not request_data_bytes:
-                logging.warning("Client disconnected before sending data.")
+                logging.warning("Client disconnected.")
                 return
 
             request_data = request_data_bytes.decode('utf-8')
             request_line = request_data.splitlines()[0] if request_data else ''
-            logging.info(f"Request Line: {request_line}")
+            logging.info(request_line)
 
             response_line = "HTTP/1.1 200 OK\r\n"
             content_type_header = "Content-Type: text/html\r\n"
@@ -33,7 +33,6 @@ def handle_request(client_socket):
                              response_content)
             
             client_socket.sendall(full_response.encode('utf-8'))
-            logging.info("Response sent successfully.")
 
         except (BrokenPipeError, ConnectionResetError, socket.error) as e:
             logging.error(f"Socket error while handling request: {e}")
