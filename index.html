@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Interactive Guide: Building a Python Web Server</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f3f4f6;
+            /* gray-100 */
+        }
+
+        .nav-link.active {
+            background-color: #e0e7ff;
+            /* indigo-100 */
+            color: #3730a3;
+            /* indigo-800 */
+            font-weight: 600;
+        }
+
+        .content-card {
+            background-color: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .content-section {
+            display: none;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #d1d5db;
+            border-radius: 10px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #9ca3af;
+        }
+    </style>
+</head>
+
+<body class="text-gray-800">
+
+    <div class="flex flex-col md:flex-row min-h-screen">
+        <!-- Sidebar Navigation -->
+        <aside
+            class="w-full md:w-80 lg:w-96 bg-white shadow-lg md:h-screen md:sticky md:top-0 p-4 md:p-6 flex-shrink-0">
+            <h1 class="text-2xl font-bold text-indigo-800 mb-2">Python Web Server Plan</h1>
+            <p class="text-sm text-gray-600 mb-6">From Scratch to a Production-Ready API Framework</p>
+            <nav id="navigation" class="space-y-4 overflow-y-auto" style="max-height: calc(100vh - 150px);">
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Phase 1: The Basics
+                    </h3>
+                    <ul class="space-y-1">
+                        <li><a href="#part-1"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                1: "Hello, Browser!" Server</a></li>
+                        <li><a href="#part-2"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                2: Serving HTML Files</a></li>
+                        <li><a href="#part-3"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                3: Routing & 404s</a></li>
+                        <li><a href="#part-4"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                4: Serving Assets</a></li>
+                        <li><a href="#part-5"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                5: Multi-threading</a></li>
+                        <li><a href="#part-6"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                6: POST Requests</a></li>
+                        <li><a href="#part-7"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                7: The Grand Refactor</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Phase 2: Advanced
+                        Features</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#part-8"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                8: High-Performance `asyncio`</a></li>
+                        <li><a href="#part-9"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                9: Session Management</a></li>
+                        <li><a href="#part-13"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                13: Middleware Pattern</a></li>
+                        <li><a href="#part-14"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                14: WebSockets</a></li>
+                        <li><a href="#part-15"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                15: Database Integration</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Phase 3: Production
+                        Readiness</h3>
+                    <ul class="space-y-1">
+                        <li><a href="#part-10"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                10: Security Hardening</a></li>
+                        <li><a href="#part-11"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                11: HTTPS with SSL/TLS</a></li>
+                        <li><a href="#part-16"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                16: Graceful Shutdown</a></li>
+                        <li><a href="#part-12"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                12: Deployment</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">Phase 4: API Framework
+                    </h3>
+                    <ul class="space-y-1">
+                        <li><a href="#part-17"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                17: Advanced Routing</a></li>
+                        <li><a href="#part-18"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                18: Data Validation</a></li>
+                        <li><a href="#part-19"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                19: Dependency Injection</a></li>
+                        <li><a href="#part-20"
+                                class="nav-link block w-full text-left px-4 py-2 text-gray-700 rounded-md hover:bg-gray-100 transition-colors duration-150">Part
+                                20: Auto API Documentation</a></li>
+                    </ul>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-4 sm:p-6 md:p-10">
+            <div id="content-area" class="space-y-8">
+                <!-- Introduction Section -->
+                <section id="introduction" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-3xl font-bold mb-4 text-indigo-900">Building a Python Web Server: The Complete
+                            Journey</h2>
+                        <p class="text-lg text-gray-600 mb-6">This interactive guide outlines the complete plan for
+                            building a web server from the ground up using only Python's standard libraries. The
+                            tutorial is structured to take you from the simplest network socket concepts to a secure,
+                            high-performance API framework ready for production. Use the navigation on the left to
+                            explore each part of the journey.</p>
+
+                        <div class="p-6 bg-gray-50 rounded-lg">
+                            <h3 class="font-semibold text-xl mb-4 text-center">Project Progression</h3>
+                            <div
+                                class="flex flex-col md:flex-row items-center justify-center space-y-4 md:space-y-0 md:space-x-4 text-center text-sm">
+                                <div class="p-3 bg-indigo-100 text-indigo-800 rounded-lg shadow-sm">
+                                    <span class="font-bold">Phase 1</span><br>Basic Server
+                                </div>
+                                <div class="text-gray-400 font-bold text-2xl">→</div>
+                                <div class="p-3 bg-purple-100 text-purple-800 rounded-lg shadow-sm">
+                                    <span class="font-bold">Phase 2</span><br>Advanced Features
+                                </div>
+                                <div class="text-gray-400 font-bold text-2xl">→</div>
+                                <div class="p-3 bg-green-100 text-green-800 rounded-lg shadow-sm">
+                                    <span class="font-bold">Phase 3</span><br>Production Ready
+                                </div>
+                                <div class="text-gray-400 font-bold text-2xl">→</div>
+                                <div class="p-3 bg-yellow-100 text-yellow-800 rounded-lg shadow-sm">
+                                    <span class="font-bold">Phase 4</span><br>API Framework
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 1 Content -->
+                <section id="part-1" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 1: The "Hello, Browser!" Server</h2>
+                        <p class="text-gray-600 mb-6">Understand the absolute minimum required to get a response from a
+                            server to a browser.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Sockets & TCP/IP</li>
+                                    <li>Basic HTTP response structure</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>socket</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A script that serves "Hello, World!" to a browser at
+                                <code>http://localhost:8080</code>.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 2 Content -->
+                <section id="part-2" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 2: Serving a Real HTML File</h2>
+                        <p class="text-gray-600 mb-6">Move from a hard-coded response to serving a static HTML file from
+                            the disk.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Parsing HTTP request path</li>
+                                    <li>Reading local files</li>
+                                    <li><code>Content-Type</code> & <code>Content-Length</code> headers</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>socket</code>, <code>os</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A server that serves a basic <code>index.html</code> page.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 3 Content -->
+                <section id="part-3" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 3: Basic Routing and Handling 404s</h2>
+                        <p class="text-gray-600 mb-6">Serve different files based on the requested URL and handle
+                            requests for files that don't exist.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Simple routing logic</li>
+                                    <li>HTTP Status Codes (200 vs 404)</li>
+                                    <li>Basic path traversal security</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>socket</code>, <code>os.path</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A server that can serve multiple pages and handle errors.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 4 Content -->
+                <section id="part-4" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 4: Serving Assets (CSS, JavaScript, and Images)</h2>
+                        <p class="text-gray-600 mb-6">Enable the server to handle a full website by serving assets, not
+                            just HTML.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>MIME types</li>
+                                    <li>Dynamic <code>Content-Type</code></li>
+                                    <li>Serving binary data</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A server that can successfully host a website with styling,
+                                interactivity, and images.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 5 Content -->
+                <section id="part-5" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 5: Handling Multiple Clients with Threading</h2>
+                        <p class="text-gray-600 mb-6">Fix the major bottleneck of our server so it can handle more than
+                            one request at a time.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Concurrency</li>
+                                    <li>Multi-threading</li>
+                                    <li>Global Interpreter Lock (GIL)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>socket</code>, <code>threading</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A multi-threaded server that is much more responsive and can handle
+                                simultaneous requests.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 6 Content -->
+                <section id="part-6" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 6: Handling POST Requests and Form Data</h2>
+                        <p class="text-gray-600 mb-6">Add the ability to receive data from the client, not just send it.
+                        </p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>GET vs. POST methods</li>
+                                    <li>Reading request body</li>
+                                    <li>Parsing URL-encoded form data</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>urllib.parse</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A dynamic server that can accept and process user input from an
+                                HTML form.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 7 Content -->
+                <section id="part-7" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 7: The Grand Refactor: Towards a Real Framework</h2>
+                        <p class="text-gray-600 mb-6">Clean up the code using Object-Oriented Programming (OOP) to make
+                            it maintainable and extensible.</p>
+                        <div>
+                            <h3 class="font-semibold mb-2">Core Concepts</h3>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>OOP principles (Encapsulation)</li>
+                                <li>Separation of Concerns</li>
+                                <li>Request/Response cycle abstraction</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A well-structured, object-oriented web server project that is easy
+                                to extend with new features.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 8 Content -->
+                <section id="part-8" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 8: High-Performance Concurrency with
+                            <code>asyncio</code></h2>
+                        <p class="text-gray-600 mb-6">Re-architect the server to handle thousands of concurrent
+                            connections efficiently using non-blocking asynchronous I/O, surpassing the limitations of
+                            the threading model.</p>
+                        <div class="space-y-4">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Asynchronous vs. synchronous programming</li>
+                                    <li><code>async</code>/<code>await</code> syntax</li>
+                                    <li>Event loops & Coroutines</li>
+                                    <li>Non-blocking sockets</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>asyncio</code>, <code>aiofiles</code></p>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Detailed Steps</h3>
+                                <ol class="list-decimal list-inside text-gray-700 space-y-1">
+                                    <li>Analyze performance ceiling of the threaded model.</li>
+                                    <li>Introduce the concept of the event loop.</li>
+                                    <li>Refactor request handler to be an <code>async def</code> coroutine.</li>
+                                    <li>Replace socket loop with <code>asyncio.start_server</code>.</li>
+                                    <li>Use <code>await</code> for all I/O, including file access with
+                                        <code>aiofiles</code>.</li>
+                                    <li>Run the server with <code>asyncio.run()</code>.</li>
+                                </ol>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A modern, high-performance server capable of handling a very large
+                                number of simultaneous connections.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 9 Content -->
+                <section id="part-9" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 9: Cookies and Session Management</h2>
+                        <p class="text-gray-600 mb-6">Implement session management to track user state across multiple
+                            requests, enabling features like user logins.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Statelessness of HTTP & Cookies</li>
+                                    <li>Cryptographically secure session IDs</li>
+                                    <li>Server-side session storage</li>
+                                    <li>Secure cookie attributes (`HttpOnly`, etc.)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>secrets</code>, <code>http.cookies</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A stateful server that can "remember" users securely across
+                                requests.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 10 Content -->
+                <section id="part-10" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 10: Hardening the Server: Security Best Practices</h2>
+                        <p class="text-gray-600 mb-6">Implement foundational security measures to protect the server and
+                            its users from common web vulnerabilities.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Defense-in-depth & Secure HTTP headers</li>
+                                    <li>Cross-Site Scripting (XSS) prevention</li>
+                                    <li>Input sanitization & Path traversal defense</li>
+                                    <li>Rate limiting (at reverse proxy)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>html</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A server with a much stronger, multi-layered security posture.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 11 Content -->
+                <section id="part-11" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 11: Adding HTTPS with SSL/TLS</h2>
+                        <p class="text-gray-600 mb-6">Encrypt all traffic between the client and server, making the
+                            connection private and secure.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Symmetric/Asymmetric encryption</li>
+                                    <li>SSL/TLS handshake & Certificates</li>
+                                    <li>Certificate Authorities (CAs)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>ssl</code></p>
+                                <h3 class="font-semibold mb-2 mt-4">Tools</h3>
+                                <p class="text-gray-700">OpenSSL, Let's Encrypt (Certbot)</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A server that can serve content over <code>https://</code>,
+                                providing a secure, encrypted channel.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 12 Content -->
+                <section id="part-12" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 12: Production Deployment with a Reverse Proxy</h2>
+                        <p class="text-gray-600 mb-6">Deploy the Python server into a realistic, robust production
+                            environment and expose it to the public internet via a domain name.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Reverse proxies</li>
+                                    <li>DNS `A` records</li>
+                                    <li>Process management & Logging</li>
+                                    <li>WSGI/ASGI servers</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Tools</h3>
+                                <p class="text-gray-700">Nginx, <code>systemd</code>, Certbot</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A complete, production-grade setup where the Python server runs as
+                                a secure, managed, and publicly accessible web application.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 13 Content -->
+                <section id="part-13" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 13: Advanced Architecture: The Middleware Pattern</h2>
+                        <p class="text-gray-600 mb-6">Implement a middleware pattern to cleanly separate cross-cutting
+                            concerns (like logging, authentication, and error handling) from the core request handling
+                            logic.</p>
+                        <div>
+                            <h3 class="font-semibold mb-2">Core Concepts</h3>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Middleware architecture</li>
+                                <li>Request/response pipeline</li>
+                                <li>Separation of concerns</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A much cleaner, more scalable, and framework-like architecture that
+                                makes adding new features easier.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 14 Content -->
+                <section id="part-14" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 14: Real-time Communication with WebSockets</h2>
+                        <p class="text-gray-600 mb-6">Add support for WebSockets to enable persistent, bidirectional,
+                            real-time communication between the client and server.</p>
+                        <div>
+                            <h3 class="font-semibold mb-2">Core Concepts</h3>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>The WebSocket protocol</li>
+                                <li>HTTP `Upgrade` handshake</li>
+                                <li>Managing persistent connections</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A server capable of powering modern, real-time applications like
+                                chats, live dashboards, and collaborative tools.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 15 Content -->
+                <section id="part-15" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 15: Integrating a Database for Persistence</h2>
+                        <p class="text-gray-600 mb-6">Connect the server to a real database to persist data, moving
+                            beyond in-memory session storage.</p>
+                        <div>
+                            <h3 class="font-semibold mb-2">Core Concepts</h3>
+                            <ul class="list-disc list-inside text-gray-700">
+                                <li>Data persistence</li>
+                                <li>Connection pooling</li>
+                                <li>Asynchronous database drivers</li>
+                            </ul>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A truly dynamic application that can store and retrieve data
+                                persistently, making it a complete web application backend.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 16 Content -->
+                <section id="part-16" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 16: Professionalism: Graceful Shutdown</h2>
+                        <p class="text-gray-600 mb-6">Implement a graceful shutdown mechanism to ensure the server can
+                            be stopped cleanly without dropping active connections or losing data.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Process signals (SIGINT, SIGTERM)</li>
+                                    <li>Cleaning up resources</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>signal</code>, <code>asyncio</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A production-ready server that behaves professionally, ensuring
+                                data integrity and a smooth shutdown/restart process during deployments.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 17 Content -->
+                <section id="part-17" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 17: Evolving to an API Framework: Advanced Routing</h2>
+                        <p class="text-gray-600 mb-6">Enhance the router to support RESTful API patterns, including
+                            typed path parameters and method-based dispatching.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>REST principles</li>
+                                    <li>Path parameter extraction</li>
+                                    <li>HTTP method dispatching (GET, POST, PUT, DELETE)</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>re</code> (for route matching)</p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A powerful router that can cleanly define and manage complex REST
+                                API endpoints.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 18 Content -->
+                <section id="part-18" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 18: Data Modeling, Validation, and Serialization</h2>
+                        <p class="text-gray-600 mb-6">Implement a system for defining data schemas to automatically
+                            parse, validate, and serialize JSON request and response bodies.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Data validation & serialization</li>
+                                    <li>Schemas & Type hints</li>
+                                    <li>JSON handling</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>json</code>, <code>inspect</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">Automatic, type-hint-based data validation and serialization, which
+                                drastically reduces boilerplate code and improves robustness.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 19 Content -->
+                <section id="part-19" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 19: Building a Dependency Injection System</h2>
+                        <p class="text-gray-600 mb-6">Create a dependency injection (DI) system that automatically
+                            provides route handlers with the dependencies they need.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>Dependency injection (DI)</li>
+                                    <li>Inversion of control</li>
+                                    <li>Function signature introspection</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>inspect</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A highly advanced, framework-level feature that simplifies
+                                application logic, improves testability, and provides an elegant developer experience.
+                            </p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Part 20 Content -->
+                <section id="part-20" class="content-section">
+                    <div class="content-card p-6 md:p-8">
+                        <h2 class="text-2xl font-bold mb-3">Part 20: Automatic API Documentation</h2>
+                        <p class="text-gray-600 mb-6">Generate interactive, self-documenting API documentation from the
+                            code, similar to Swagger UI or ReDoc.</p>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <h3 class="font-semibold mb-2">Core Concepts</h3>
+                                <ul class="list-disc list-inside text-gray-700">
+                                    <li>OpenAPI Specification</li>
+                                    <li>Code introspection</li>
+                                    <li>Serving interactive web content</li>
+                                </ul>
+                            </div>
+                            <div>
+                                <h3 class="font-semibold mb-2">Key Libraries</h3>
+                                <p class="text-gray-700"><code>inspect</code>, <code>json</code></p>
+                            </div>
+                        </div>
+                        <div class="mt-6 pt-4 border-t">
+                            <h3 class="font-semibold mb-2 text-indigo-700">Outcome ✓</h3>
+                            <p class="text-gray-700">A professional web server that automatically documents itself,
+                                providing a world-class developer experience.</p>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const navigation = document.getElementById('navigation');
+            const contentSections = document.querySelectorAll('.content-section');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            function setActiveContent(hash) {
+                // Default to introduction if hash is empty or invalid
+                const targetHash = hash || '#introduction';
+
+                let targetLink = document.querySelector(`.nav-link[href="${targetHash}"]`);
+                let targetSection = document.getElementById(targetHash.substring(1));
+
+                // If the hash doesn't correspond to a specific part, default to introduction
+                if (!targetSection) {
+                    targetLink = null; // No link to activate for intro
+                    targetSection = document.getElementById('introduction');
+                }
+
+                // Deactivate all
+                navLinks.forEach(link => link.classList.remove('active'));
+                contentSections.forEach(section => section.classList.remove('active'));
+
+                // Activate target
+                if (targetLink) {
+                    targetLink.classList.add('active');
+                }
+                if (targetSection) {
+                    targetSection.classList.add('active');
+                } else {
+                    // Fallback to introduction if target is still not found
+                    document.getElementById('introduction').classList.add('active');
+                }
+            }
+
+            navigation.addEventListener('click', (event) => {
+                const link = event.target.closest('a');
+                if (link) {
+                    event.preventDefault();
+                    const hash = link.getAttribute('href');
+                    setActiveContent(hash);
+                    // Update URL hash without jumping
+                    history.pushState(null, null, hash);
+                }
+            });
+
+            // Handle browser back/forward buttons
+            window.addEventListener('popstate', () => {
+                setActiveContent(window.location.hash);
+            });
+
+            // Set initial state based on URL hash
+            if (window.location.hash) {
+                setActiveContent(window.location.hash);
+            } else {
+                // If no hash, default to the introduction but also set the link for part-1 active
+                setActiveContent('#introduction');
+                document.querySelector('.nav-link[href="#part-1"]').classList.add('active');
+            }
+        });
+    </script>
+
+</body>
+
+</html>
