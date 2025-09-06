@@ -12,7 +12,6 @@ def handle_request(client_socket):
     with client_socket:
         try:
             request_data_bytes = client_socket.recv(1024)
-            
             if not request_data_bytes:
                 logging.warning("Client disconnected before sending data.")
                 return
